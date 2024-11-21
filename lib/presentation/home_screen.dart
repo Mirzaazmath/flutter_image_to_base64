@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io' as io;
@@ -24,6 +25,18 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         title: const Text("Image to Base64 Converter "),
       ),
+      floatingActionButton:selectedImage.isEmpty?const SizedBox(): FloatingActionButton(
+        backgroundColor: Colors.blueGrey,
+        onPressed: (){
+         setState(() {
+           selectedImage="";
+           _controller.text="";
+         });
+
+      },
+        child:const  Icon(Icons.delete_outline_outlined,color: Colors.white,),
+      ),
+
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -72,24 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(
               height: 20,
             ),
-            // Padding(
-            //     padding: const EdgeInsets.symmetric(vertical: 10),
-            //     child: Container(
-            //       height: 50,
-            //       width: double.infinity,
-            //       decoration: BoxDecoration(
-            //         color: Colors.blueGrey,
-            //         borderRadius: BorderRadius.circular(20),
-            //       ),
-            //       alignment: Alignment.center,
-            //       child: const Text(
-            //         "Convert",
-            //         style: TextStyle(
-            //             color: Colors.white,
-            //             fontSize: 18,
-            //             fontWeight: FontWeight.bold),
-            //       ),
-            //     )),
+
             Expanded(
                 child: selectedImage.isEmpty
                     ? const SizedBox()
@@ -115,7 +111,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: IconButton.outlined(
                                   color: Colors.blueGrey,
                                   onPressed: ()async {
-                                    await Clipboard.setData(ClipboardData(text: _controller.text));
+                                    await Clipboard.setData(ClipboardData(text: _controller.text)).then((value){
+                                      const snackBar = SnackBar(content:  Text('Copied'),duration: Duration(milliseconds: 500),behavior: SnackBarBehavior.floating,);
+                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                    });
+
                                   },
                                   icon: const Icon(Icons.copy)))
                         ],
